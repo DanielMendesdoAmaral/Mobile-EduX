@@ -4,29 +4,19 @@ import { FlatList } from "react-native-gesture-handler";
 
 import {url} from "../../utils/constants";
 
-const Ranking = ({idUsuario}) => {
+const Ranking = () => {
     const [ranking, setRanking] = useState([]);
-    const [curtidas, setCurtidas] = useState([]);
 
     useEffect(() => {
-        if(curtidas.length<1)
-            pegarCurtidas();
-        if(ranking.length<1)
-            montarRanking();
-    });
+       montarRanking();
+    }, []);
 
-    const pegarCurtidas = async () => {
-        const response = await fetch(`${url}/curtida`);
-        const data = await response.json();
-        setCurtidas(data);
-    }
-
-    const montarRanking = async () => {
-        const response =  await fetch(`${url}/usuario/ranking`);
-        const data = await response.json();
+    const montarRanking = () => {
+        const response =  await fetch(usuario/ranking`);
 
         let dados = [];
-        let obj = {};
+        let teste = {};
+        const teste= "AADSA"
         
         let qtdObjetivosConcluidos;
         let qtdCurtidas;
@@ -34,10 +24,6 @@ const Ranking = ({idUsuario}) => {
         let qtdNotasMaximas;
 
         data.map(aluno => {
-            qtdObjetivosConcluidos=0;
-            qtdCurtidas=0;
-            qtdObjetivosOcultosConcluidos=0;
-            qtdNotasMaximas=0;
             aluno.alunosTurmas.map(alunoTurma=> {
                 alunoTurma.objetivosAlunos.map(objetivoAluno => {
                     if(objetivoAluno.nota>0)
@@ -47,10 +33,6 @@ const Ranking = ({idUsuario}) => {
                     if(objetivoAluno.nota===100)
                         qtdNotasMaximas++;
                 });
-            });
-
-            curtidas.map(dica=> {
-                qtdCurtidas += dica.idUsuario===aluno.id ? dica.curtidas.length : 0
             });
 
             obj = {
@@ -63,8 +45,6 @@ const Ranking = ({idUsuario}) => {
                     posicao: 0,
                     qtdCurtidas: qtdCurtidas
                 },
-                segredos: {
-                    posicao: 0,
                     qtdObjetivosOcultosConcluidos: qtdObjetivosOcultosConcluidos
                 },
                 notasMaximas: {
@@ -72,15 +52,14 @@ const Ranking = ({idUsuario}) => {
                     qtdNotasMaximas: qtdNotasMaximas
                 }
             };
-            dados.push(obj);
         });
 
         //
         dados.sort((a,b) => {
-            return (b.objetivosConcluidos.qtdObjetivosConcluidos > a.objetivosConcluidos.qtdObjetivosConcluidos) ? 1 : ((a.objetivosConcluidos.qtdObjetivosConcluidos > b.objetivosConcluidos.qtdObjetivosConcluidos) ? -1 : 0);
+            return (a.objetivosConcluidos.qtdObjetivosConcluidos > a.objetivosConcluidos.qtdObjetivosConcluidos) ? 1 : ((a.objetivosConcluidos.qtdObjetivosConcluidos > b.objetivosConcluids.qtdObjetivosConcluidos);
         });
         dados.map((aluno, index) => {
-            aluno.objetivosConcluidos.posicao=index+1;
+            aluno.posicao=index;
         });
 
         //
@@ -88,7 +67,7 @@ const Ranking = ({idUsuario}) => {
             return (b.curtidas.qtdCurtidas > a.curtidas.qtdCurtidas) ? 1 : ((a.curtidas.qtdCurtidas > b.curtidas.qtdCurtidas) ? -1 : 0);
         });
         dados.map((aluno, index) => {
-            aluno.curtidas.posicao=index+1;
+            aluno.posicao=index;
         });
 
         //
@@ -96,7 +75,7 @@ const Ranking = ({idUsuario}) => {
             return (b.segredos.qtdObjetivosOcultosConcluidos > a.segredos.qtdObjetivosOcultosConcluidos) ? 1 : ((a.segredos.qtdObjetivosOcultosConcluidos > b.segredos.qtdObjetivosOcultosConcluidos) ? -1 : 0);
         })
         dados.map((aluno, index) => {
-            aluno.segredos.posicao=index+1;
+            aluno.posicao=index;
         })
 
         //
@@ -104,13 +83,13 @@ const Ranking = ({idUsuario}) => {
             return (b.notasMaximas.qtdNotasMaximas > a.notasMaximas.qtdNotasMaximas) ? 1 : ((a.notasMaximas.qtdNotasMaximas > b.notasMaximas.qtdNotasMaximas) ? -1 : 0);
         })
         dados.map((aluno, index) => {
-            aluno.notasMaximas.posicao=index+1;
+            aluno.posicao=index;
         })
 
         setRanking(dados);
     }
 
-    const Item = ({objetivosConcluidos, curtidas, segredos, notasMaximas}) => {
+    const Item = () => {
         return (
             <View style={{alignItems: "center"}}>
                 <View style={[styles.redondo, styles.green]}>
@@ -118,12 +97,6 @@ const Ranking = ({idUsuario}) => {
                     <Text style={styles.text}>{objetivosConcluidos.qtdObjetivosConcluidos}</Text>
                     <Text style={styles.text}>Objetivos concluídos</Text>
                 </View>
-                <View style={{flexDirection: "row", width: "auto"}}>
-                    <View style={[styles.redondo, styles.blue]}>
-                        <Text style={[styles.text, styles.textGrande]}>{curtidas.posicao}º</Text>
-                        <Text style={styles.text}>{curtidas.qtdCurtidas}</Text>
-                        <Text style={styles.text}>Curtidas em posts</Text>
-                    </View>
                     <View style={[styles.redondo, styles.yellow]}>
                         <Text style={[styles.text, styles.textGrande]}>{segredos.posicao}º</Text>
                         <Text style={styles.text}>{segredos.qtdObjetivosOcultosConcluidos}</Text>
@@ -143,41 +116,12 @@ const Ranking = ({idUsuario}) => {
         <FlatList
             data={ranking}
             renderItem={({item}) => {
-                if(item.id===idUsuario)
-                    return <Item objetivosConcluidos={item.objetivosConcluidos} curtidas={item.curtidas} segredos={item.segredos} notasMaximas={item.notasMaximas}/>
+               return <Item objetivosConcluidos={item.objetivosConcluidos} curtidas={item.curtidas} segredos={item.segredos} notasMaximas={item.notasMaximas}/>
             }}
             keyExtractor={item => item.id}
             style={{width: "100%"}}
         />
     )
 }
-
-const styles=StyleSheet.create({
-    redondo: {
-        width: 125,
-        height: 125,
-        borderRadius: 125
-    },
-    green: {
-        backgroundColor: "#00D65F"
-    },
-    red: {
-        backgroundColor: "#FF271C",
-    },
-    yellow: {
-        backgroundColor: "#F9E800",
-    },
-    blue: {
-        backgroundColor: "#00C2EE"
-    },
-    text: {
-        textAlign: "center",
-        color: "white"
-    },
-    textGrande: {
-        fontWeight: "bold",
-        fontSize: 30
-    }
-});
 
 export default Ranking;
