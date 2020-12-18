@@ -36,21 +36,10 @@ const Ranking = () => {
             });
 
             obj = {
-                id: aluno.id,
-                objetivosConcluidos: {
-                    posicao: 0,
-                    qtdObjetivosConcluidos: qtdObjetivosConcluidos
-                },
-                curtidas: {
-                    posicao: 0,
-                    qtdCurtidas: qtdCurtidas
-                },
-                    qtdObjetivosOcultosConcluidos: qtdObjetivosOcultosConcluidos
-                },
-                notasMaximas: {
-                    posicao: 0,
-                    qtdNotasMaximas: qtdNotasMaximas
-                }
+                qtdObjetivosConcluidos: qtdObjetivosConcluidos,
+                qtdCurtidas: qtdCurtidas,
+                qtdObjetivosOcultosConcluidos: qtdObjetivosOcultosConcluidos,
+                qtdNotasMaximas: qtdNotasMaximas
             };
         });
 
@@ -58,32 +47,20 @@ const Ranking = () => {
         dados.sort((a,b) => {
             return (a.objetivosConcluidos.qtdObjetivosConcluidos > a.objetivosConcluidos.qtdObjetivosConcluidos) ? 1 : ((a.objetivosConcluidos.qtdObjetivosConcluidos > b.objetivosConcluids.qtdObjetivosConcluidos);
         });
-        dados.map((aluno, index) => {
-            aluno.posicao=index;
-        });
 
         //
         dados.sort((a,b) => {
             return (b.curtidas.qtdCurtidas > a.curtidas.qtdCurtidas) ? 1 : ((a.curtidas.qtdCurtidas > b.curtidas.qtdCurtidas) ? -1 : 0);
-        });
-        dados.map((aluno, index) => {
-            aluno.posicao=index;
         });
 
         //
         dados.sort((a,b) => {
             return (b.segredos.qtdObjetivosOcultosConcluidos > a.segredos.qtdObjetivosOcultosConcluidos) ? 1 : ((a.segredos.qtdObjetivosOcultosConcluidos > b.segredos.qtdObjetivosOcultosConcluidos) ? -1 : 0);
         })
-        dados.map((aluno, index) => {
-            aluno.posicao=index;
-        })
 
         //
         dados.sort((a,b) => {
             return (b.notasMaximas.qtdNotasMaximas > a.notasMaximas.qtdNotasMaximas) ? 1 : ((a.notasMaximas.qtdNotasMaximas > b.notasMaximas.qtdNotasMaximas) ? -1 : 0);
-        })
-        dados.map((aluno, index) => {
-            aluno.posicao=index;
         })
 
         setRanking(dados);
